@@ -52,7 +52,7 @@ X_test <- tbl_df(read.table("test/X_test.txt", col.names=features$V2))
 # Add the subject Id's and activity labels and select only the desired columns
 # The desired columns are the mean and standard deviation values (plus the columns we added) - these can be recognized by the correspoinding feature name
 # Do this for both sets prior to merge so we don't have to consider the unused columns
-trainData <- X_train %>% mutate(subjectId=trainSubects$V1,
+trainData <- X_train %>% mutate(subjectId=trainSubjects$V1,
                                 activity=activityLabels[trainActivities$V1,2]) %>%
     select( subjectId, activity, contains("mean"), contains("std") )
 
@@ -70,8 +70,7 @@ ds <- bind_rows( trainData, testData )
 # Values will be the mean and std for that key combo
 gb <- ds %>%
     # Put each measurement in it's own row
-    #gather(measurement, val, tBodyAcc.mean...X:fBodyBodyGyroJerkMag.std..)  %>%
-    gather(measurement, val, -subjectId:activity)  %>%
+    gather(measurement, val, -(subjectId:activity))  %>%
     
     # Take average for each subject,activty,measurement
     group_by( subjectId, activity, measurement ) %>%
